@@ -225,7 +225,7 @@ class RaftServerImpl implements RaftServer.Division,
         .setProperties(getRaftServer().getProperties())
         .build());
 
-    this.transferLeadership = new TransferLeadership(this);
+    this.transferLeadership = new TransferLeadership(this, properties);
     this.snapshotRequestHandler = new SnapshotManagementRequestHandler(this);
     this.snapshotInstallationHandler = new SnapshotInstallationHandler(this, properties);
 
@@ -1072,10 +1072,6 @@ class RaftServerImpl implements RaftServer.Division,
     return transferLeadership.isSteppingDown();
   }
 
-  void finishTransferLeadership() {
-    transferLeadership.finish(state.getLeaderId(), false);
-  }
-
   CompletableFuture<RaftClientReply> transferLeadershipAsync(TransferLeadershipRequest request)
       throws IOException {
     if (request.getNewLeader() == null) {
@@ -1459,6 +1455,10 @@ class RaftServerImpl implements RaftServer.Division,
 
   private CommitInfoProto updateCommitInfoCache() {
     return commitInfoCache.update(getPeer(), state.getLog().getLastCommittedIndex());
+  }
+
+  ExecutorService getServerExecutor() {
+    return serverExecutor;
   }
 
   @SuppressWarnings("checkstyle:parameternumber")
@@ -1850,5 +1850,6 @@ class RaftServerImpl implements RaftServer.Division,
 
   void onGroupLeaderElected() {
     this.firstElectionSinceStartup.set(false);
+    transferLeadership.complete(null);
   }
 }
