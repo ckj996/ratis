@@ -135,7 +135,11 @@ public class TransferLeadership {
     // If the transferee has just append some entries and becomes up-to-date,
     // send StartLeaderElection to it
     if (getTransferee().filter(t -> t.equals(follower.getId())).isPresent()) {
-      start(leaderState, newRequest(follower.getId()));
+      final String error = leaderState.sendStartLeaderElection(follower, leaderState.getLastEntry());
+      if (error == null) {
+        LOG.info("{}: sent StartLeaderElection to transferee {} after received AppendEntriesResponse",
+            server.getMemberId(), follower.getId());
+      }
     }
   }
 
@@ -153,6 +157,10 @@ public class TransferLeadership {
           server.getMemberId(), transferee);
     } else {
       appender.notifyLogAppender();
+    }
+    if (error != null && !ClientId.emptyClientId().equals(context.getRequest().getClientId())
+        && error.contains("not up-to-date")) {
+      return null;
     }
     return error;
   }
