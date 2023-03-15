@@ -158,8 +158,7 @@ public class TransferLeadership {
     } else {
       appender.notifyLogAppender();
     }
-    if (error != null && !ClientId.emptyClientId().equals(context.getRequest().getClientId())
-        && error.contains("not up-to-date")) {
+    if (error != null && error.contains("not up-to-date")) {
       return null;
     }
     return error;
