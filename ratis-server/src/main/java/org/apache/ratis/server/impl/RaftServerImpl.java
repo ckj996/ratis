@@ -225,7 +225,7 @@ class RaftServerImpl implements RaftServer.Division,
         .setProperties(getRaftServer().getProperties())
         .build());
 
-    this.transferLeadership = new TransferLeadership(this, properties);
+    this.transferLeadership = new TransferLeadership(this);
     this.snapshotRequestHandler = new SnapshotManagementRequestHandler(this);
     this.snapshotInstallationHandler = new SnapshotInstallationHandler(this, properties);
 

@@ -112,14 +112,12 @@ public class TransferLeadership {
   }
 
   private final RaftServerImpl server;
-  private final TimeDuration requestTimeout;
   private final TimeoutExecutor scheduler = TimeoutExecutor.getInstance();
 
   private final AtomicReference<PendingRequest> pending = new AtomicReference<>();
 
-  TransferLeadership(RaftServerImpl server, RaftProperties properties) {
+  TransferLeadership(RaftServerImpl server) {
     this.server = server;
-    this.requestTimeout = RaftServerConfigKeys.Rpc.requestTimeout(properties);
   }
 
   private Optional<RaftPeerId> getTransferee() {
@@ -192,8 +190,8 @@ public class TransferLeadership {
     if (error != null) {
       pendingRequest.complete(error);
     } else {
-      // if timeout is not specified in request, use default request timeout
-      final TimeDuration timeout = request.getTimeoutMs() == 0 ? requestTimeout
+      // if timeout is not specified in request, default to random election timeout
+      final TimeDuration timeout = request.getTimeoutMs() == 0 ? server.getRandomElectionTimeout()
           : TimeDuration.valueOf(request.getTimeoutMs(), TimeUnit.MILLISECONDS);
       scheduler.onTimeout(timeout, () -> complete("timed out " + timeout.toString(TimeUnit.SECONDS, 3)),
           LOG, () -> "Failed to transfer leadership to " + request.getNewLeader() + ": timeout after " + timeout);
