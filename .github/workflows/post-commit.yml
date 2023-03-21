@@ -49,7 +49,7 @@ jobs:
             restore-keys: |
               maven-repo-${{ hashFiles('**/pom.xml') }}
               maven-repo-
-        - run: ./dev-support/checks/unit.sh -Dtest=TestLeaderElectionWithSimulatedRpc#testEnforceLeader*
+        - run: ./dev-support/checks/unit.sh -Dtest=TestLeaderElectionWithSimulatedRpc#testEnforceLeader*,TestLeaderElectionWithNetty#testEnforceLeader*,TestLeaderElectionWithGrpc#testEnforceLeader*
           env:
             ITERATIONS: 40
         - name: Summary of failures
