@@ -49,7 +49,7 @@ jobs:
             restore-keys: |
               maven-repo-${{ hashFiles('**/pom.xml') }}
               maven-repo-
-        - run: ./dev-support/checks/unit.sh -Dtest=TestLeaderInstallSnapshot#testSeparateSnapshotInstallPath* -Dsurefire.failIfNoSpecifiedTests=false
+        - run: ./dev-support/checks/unit.sh -Dtest=TestLeaderInstallSnapshot#testMultiFileInstallSnapshot* -Dsurefire.failIfNoSpecifiedTests=false
           env:
             ITERATIONS: 10
         - name: Summary of failures
