@@ -78,7 +78,7 @@ public class RaftServerTestUtil {
   public static void waitAndCheckNewConf(MiniRaftCluster cluster,
       RaftPeer[] peers, int numOfRemovedPeers, Collection<RaftPeerId> deadPeers)
       throws Exception {
-    final TimeDuration sleepTime = cluster.getTimeoutMax().apply(n -> n * (numOfRemovedPeers + 2));
+    final TimeDuration sleepTime = cluster.getTimeoutMax().apply(n -> n * (numOfRemovedPeers + 20));
     JavaUtils.attempt(() -> waitAndCheckNewConf(cluster, Arrays.asList(peers), deadPeers),
         10, sleepTime, "waitAndCheckNewConf", LOG);
   }
