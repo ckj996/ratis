@@ -25,7 +25,6 @@ import org.apache.ratis.server.storage.FileInfo;
 import org.apache.ratis.server.storage.RaftStorage;
 import org.apache.ratis.statemachine.SnapshotRetentionPolicy;
 import org.apache.ratis.statemachine.StateMachineStorage;
-import org.apache.ratis.thirdparty.com.google.common.annotations.VisibleForTesting;
 import org.apache.ratis.util.AtomicFileOutputStream;
 import org.apache.ratis.util.FileUtils;
 import org.apache.ratis.util.MD5FileUtil;
@@ -145,6 +144,16 @@ public class SimpleStateMachineStorage implements StateMachineStorage {
     }
   }
 
+  @Override
+  public File getSnapshotDir() {
+    return stateMachineDir;
+  }
+
+  @Override
+  public File getTmpDir() {
+    return new File(stateMachineDir.getParentFile(), "tmp");
+  }
+
   public static TermIndex getTermIndexFromSnapshotFile(File file) {
     final String name = file.getName();
     final Matcher m = SNAPSHOT_REGEX.matcher(name);
@@ -226,10 +235,5 @@ public class SimpleStateMachineStorage implements StateMachineStorage {
     } catch (IOException ignored) {
       return null;
     }
-  }
-
-  @VisibleForTesting
-  File getStateMachineDir() {
-    return stateMachineDir;
   }
 }

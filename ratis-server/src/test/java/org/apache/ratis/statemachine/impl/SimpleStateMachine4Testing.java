@@ -424,6 +424,6 @@ public class SimpleStateMachine4Testing extends BaseStateMachine {
   }
 
   public File getStateMachineDir() {
-    return storage.getStateMachineDir();
+    return storage.getSnapshotDir();
   }
 }
