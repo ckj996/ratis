@@ -92,6 +92,10 @@ public class TestStreamObserverWithTimeout extends BaseTest {
 
         final List<CompletableFuture<String>> futures = new ArrayList<>();
         for (String m : messages) {
+          if (type == Type.WithTimeout) {
+            // multiply by 0.25 to match shortSleepTime of GrpcTestServer#GreeterImpl
+            timeout.multiply(0.25).sleep();
+          }
           futures.add(client.send(m));
         }
 
